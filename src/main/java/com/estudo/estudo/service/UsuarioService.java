@@ -41,6 +41,7 @@ public class UsuarioService {
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
         usuario.setIdade(dto.getIdade());
+        usuario.setRole(dto.getRole());
 
         usuarios.add(usuario);
 
@@ -58,6 +59,7 @@ public class UsuarioService {
             usuario.setEmail(dto.getEmail());
             usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
             usuario.setIdade(dto.getIdade());
+            usuario.setRole(dto.getRole());
 
             return Optional.of(converterParaDTO(usuario));
         }
@@ -86,6 +88,7 @@ public class UsuarioService {
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
         dto.setIdade(usuario.getIdade());
+        dto.setRole(usuario.getRole());
         return dto;
     }
 

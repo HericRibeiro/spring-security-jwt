@@ -32,7 +32,7 @@ public class AuthController {
 
         return usuarioService.autenticar(dto.getEmail(), dto.getSenha())
             .map(usuario -> {
-                String token = jwtService.gerarToken(usuario.getEmail());
+                String token = jwtService.gerarTokenComUsuario(usuario);
                 return ResponseEntity.ok(token);
             })
             .orElseThrow(() -> new ResponseStatusException(

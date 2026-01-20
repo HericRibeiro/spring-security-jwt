@@ -1,20 +1,24 @@
 package com.estudo.estudo.model;
 
+import com.estudo.estudo.enums.Role;
+
 public class Usuario {
     private Long id;
     private String nome;
     private String email;
     private String senha;
     private int idade;
+    private Role role;
 
     public Usuario() {}
 
-    public Usuario(Long id, String nome, String email, String senha, int idade) {
+    public Usuario(Long id, String nome, String email, String senha, int idade, Role role) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.idade = idade;
+        this.role = role;
     }
 
     public Long getId() {
@@ -55,5 +59,13 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

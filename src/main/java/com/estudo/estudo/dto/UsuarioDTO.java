@@ -1,18 +1,22 @@
 package com.estudo.estudo.dto;
 
+import com.estudo.estudo.enums.Role;
+
 public class UsuarioDTO {
     private Long id;
     private String nome;
     private String email;
     private int idade;
+    private Role role;
 
     public UsuarioDTO() {}
 
-    public UsuarioDTO(Long id, String nome, String email, int idade) {
+    public UsuarioDTO(Long id, String nome, String email, int idade, Role role) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.idade = idade;
+        this.role = role;
     }
 
     public Long getId() {
@@ -45,5 +49,13 @@ public class UsuarioDTO {
 
     public void setIdade(int idade) {
         this.idade = idade;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
