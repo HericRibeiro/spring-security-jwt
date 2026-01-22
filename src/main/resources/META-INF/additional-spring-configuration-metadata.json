@@ -1,0 +1,31 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "com.estudo.estudo.config.JwtProperties",
+      "description": "Application configuration properties"
+    },
+    {
+      "name": "app.jwt",
+      "type": "com.estudo.estudo.config.JwtProperties$Jwt",
+      "sourceType": "com.estudo.estudo.config.JwtProperties",
+      "description": "JWT configuration"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.estudo.estudo.config.JwtProperties$Jwt",
+      "description": "JWT secret key for signing tokens",
+      "defaultValue": "your_secret_key_here"
+    },
+    {
+      "name": "app.jwt.expiration",
+      "type": "java.lang.Long",
+      "sourceType": "com.estudo.estudo.config.JwtProperties$Jwt",
+      "description": "JWT token expiration time in milliseconds",
+      "defaultValue": "3600000"
+    }
+  ]
+}

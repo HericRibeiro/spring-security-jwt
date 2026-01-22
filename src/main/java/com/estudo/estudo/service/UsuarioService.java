@@ -3,55 +3,50 @@ package com.estudo.estudo.service;
 import com.estudo.estudo.dto.CriarUsuarioDTO;
 import com.estudo.estudo.dto.UsuarioDTO;
 import com.estudo.estudo.model.Usuario;
+import com.estudo.estudo.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
-    private List<Usuario> usuarios = new ArrayList<>();
-    private Long proximoId = 1L;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public List<UsuarioDTO> listarTodos() {
-        return usuarios.stream()
+        return userRepository.findAll().stream()
             .map(this::converterParaDTO)
             .collect(Collectors.toList());
     }
 
     public Optional<UsuarioDTO> buscarPorId(Long id) {
-        return usuarios.stream()
-            .filter(u -> u.getId().equals(id))
-            .findFirst()
+        return userRepository.findById(id)
             .map(this::converterParaDTO);
     }
 
     public UsuarioDTO criar(CriarUsuarioDTO dto) {
         Usuario usuario = new Usuario();
-        usuario.setId(proximoId++);
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
         usuario.setIdade(dto.getIdade());
         usuario.setRole(dto.getRole());
 
-        usuarios.add(usuario);
+        Usuario savedUser = userRepository.save(usuario);
 
-        return converterParaDTO(usuario);
+        return converterParaDTO(savedUser);
     }
 
     public Optional<UsuarioDTO> atualizar(Long id, CriarUsuarioDTO dto) {
-        Optional<Usuario> usuarioExistente = usuarios.stream()
-            .filter(u -> u.getId().equals(id))
-            .findFirst();
+        Optional<Usuario> usuarioExistente = userRepository.findById(id);
 
         if (usuarioExistente.isPresent()) {
             Usuario usuario = usuarioExistente.get();
@@ -61,25 +56,28 @@ public class UsuarioService {
             usuario.setIdade(dto.getIdade());
             usuario.setRole(dto.getRole());
 
-            return Optional.of(converterParaDTO(usuario));
+            Usuario atualizarUsuario = userRepository.save(usuario);
+
+            return Optional.of(converterParaDTO(atualizarUsuario));
         }
 
         return Optional.empty();
     }
 
     public boolean deletar(Long id) {
-        return usuarios.removeIf(u -> u.getId().equals(id));
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public boolean emailJaExiste(String email) {
-        return usuarios.stream()
-            .anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
+        return userRepository.existsByEmail(email);
     }
 
     public Optional<Usuario> buscarPorEmail(String email) {
-        return usuarios.stream()
-            .filter(u -> u.getEmail().equalsIgnoreCase(email))
-            .findFirst();
+        return userRepository.findByEmail(email);
     }
 
     private UsuarioDTO converterParaDTO(Usuario usuario) {

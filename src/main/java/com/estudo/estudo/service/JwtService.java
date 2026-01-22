@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.estudo.estudo.model.Usuario;
+import com.estudo.estudo.config.JwtProperties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,15 +17,20 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    private final Key chaveSecreta = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long EXPIRACAO = 1000 * 60 * 60;
+    
+    @Autowired
+    private JwtProperties jwtProperties;
+
+    private Key getChaveSecreta() {
+        return Keys.hmacShaKeyFor(jwtProperties.getJwt().getSecret().getBytes());
+    }
 
     public String gerarToken(String email) {
         return Jwts.builder()
             .setSubject(email)
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRACAO))
-            .signWith(chaveSecreta)
+            .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getJwt().getExpiration()))
+            .signWith(getChaveSecreta(), SignatureAlgorithm.HS256)
             .compact();
     }
 
@@ -37,8 +44,8 @@ public class JwtService {
             .setClaims(claims)
             .setSubject(usuario.getEmail())
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRACAO))
-            .signWith(chaveSecreta)
+            .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getJwt().getExpiration()))
+            .signWith(getChaveSecreta(), SignatureAlgorithm.HS256)
             .compact();
     }
 
@@ -65,7 +72,7 @@ public class JwtService {
 
     public Claims extrairClaims(String token) {
         return Jwts.parserBuilder()
-            .setSigningKey(chaveSecreta)
+            .setSigningKey(getChaveSecreta())
             .build()
             .parseClaimsJws(token)
             .getBody();

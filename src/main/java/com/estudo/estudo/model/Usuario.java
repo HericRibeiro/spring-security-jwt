@@ -2,12 +2,29 @@ package com.estudo.estudo.model;
 
 import com.estudo.estudo.enums.Role;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "estudo")
 public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 100)
     private String nome;
+
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
+
+    @Column(nullable = false)
     private String senha;
+
+    @Column(nullable = false)
     private int idade;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public Usuario() {}
